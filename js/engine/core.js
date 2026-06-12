@@ -116,6 +116,8 @@
     RH.state = {}; RH.inv = ['phone']; RH.score = 0; RH.scored = {};
     refreshInv();
     RH.goto('scene01', 260, 172);
+    /* one-time onboarding tip, queued right after the scene's intro lines */
+    RH.say('(טיפ מהמספר: אם נתקעת — כתבי "עזרה". אבל בינינו, ערסיות לא נתקעות.)');
   };
 
   /* ===== scene transitions ===== */
@@ -418,16 +420,42 @@
   window.addEventListener('keyup', e => { delete keys[e.key]; });
   el('msgbox').addEventListener('click', advance);
 
+  function hotspotAtPoint(x, y) {
+    return activeHotspots().find(hh => {
+      const [rx, ry, rw, rh2] = hh.rect;
+      return x >= rx && x <= rx + rw && y >= ry && y <= ry + rh2;
+    });
+  }
+
+  /* hover highlight — pointer cursor + hotspot name label near the mouse */
+  const hover = document.createElement('div');
+  hover.id = 'hoverlabel';
+  cv.parentElement.appendChild(hover);
+  cv.addEventListener('mousemove', e => {
+    const r = cv.getBoundingClientRect();
+    const h = (!msgOpen && !dead && RH.scene)
+      ? hotspotAtPoint((e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height)
+      : null;
+    if (h) {
+      hover.textContent = h.names[0];
+      hover.style.display = 'block';
+      hover.style.left = (e.clientX - r.left + 16) + 'px';
+      hover.style.top = (e.clientY - r.top + 12) + 'px';
+      cv.style.cursor = 'pointer';
+    } else {
+      hover.style.display = 'none';
+      cv.style.cursor = 'crosshair';
+    }
+  });
+  cv.addEventListener('mouseleave', () => { hover.style.display = 'none'; });
+
   cv.addEventListener('click', e => {
     if (msgOpen) { advance(); return; }
     if (dead || !RH.scene) return;
     const r = cv.getBoundingClientRect();
     const x = (e.clientX - r.left) * W / r.width;
     const y = (e.clientY - r.top) * H / r.height;
-    const h = activeHotspots().find(hh => {
-      const [rx, ry, rw, rh2] = hh.rect;
-      return x >= rx && x <= rx + rw && y >= ry && y <= ry + rh2;
-    });
+    const h = hotspotAtPoint(x, y);
     if (h) doVerbOn('look', h);
     else {
       const hz = RH.scene.horizon === undefined ? 120 : RH.scene.horizon;

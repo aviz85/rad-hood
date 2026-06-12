@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>כיפה אדומה והזאב הצמחוני — קווסט</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="game">
+  <div id="statusbar"><span id="st-name"></span><span id="st-score"></span></div>
+  <div id="screenwrap">
+    <canvas id="screen" width="320" height="200"></canvas>
+    <div id="msgbox" class="hidden">
+      <div id="msgname"></div>
+      <div id="msgtext"></div>
+      <div id="msghint">לחצו או ENTER להמשך</div>
+    </div>
+    <div id="deathbox" class="hidden">
+      <div id="deathtitle">נחה על משכבה בשלום</div>
+      <div id="deathtext"></div>
+      <div class="btns">
+        <button id="btn-restore">שחזור</button>
+        <button id="btn-restart">מההתחלה</button>
+      </div>
+    </div>
+    <div id="titlebox">
+      <h1 id="title-h1"></h1>
+      <h2 id="title-h2"></h2>
+      <button id="btn-start">התחלת ההרפתקה</button>
+      <button id="btn-load">טעינת משחק שמור</button>
+      <p class="cr">בהשראת משחקי Sierra On-Line · נכתב כולו ע"י צי של 70 סוכני AI · כל הזכויות לא שמורות</p>
+    </div>
+  </div>
+  <div id="invbar"><span id="inv-label">בתיק:</span><span id="inv-items"></span></div>
+  <div id="inputbar"><span id="prompt">&lt;</span><input id="cmd" autocomplete="off" placeholder="מה לעשות? (הבט / קח / דבר עם / השתמש ב... על...)"></div>
+</div>
+
+<!-- מנוע -->
+<script src="js/engine/palette.js"></script>
+<script src="js/engine/audio.js"></script>
+<script src="js/engine/sprites.js"></script>
+<script src="js/engine/parser.js"></script>
+<script src="js/engine/core.js"></script>
+<script src="js/engine/items.js"></script>
+
+<!-- דיאלוג כללי -->
+<script src="js/dialog/snark.js"></script>
+
+<!-- ספרייטים -->
+<script src="js/sprites/s_red.js"></script>
+<script src="js/sprites/s_villains.js"></script>
+<script src="js/sprites/s_town.js"></script>
+<script src="js/sprites/s_misc.js"></script>
+
+<!-- אמנות -->
+<script src="js/art/art_title.js"></script>
+<script src="js/art/art01.js"></script>
+<script src="js/art/art02.js"></script>
+<script src="js/art/art03.js"></script>
+<script src="js/art/art04.js"></script>
+<script src="js/art/art05.js"></script>
+<script src="js/art/art06.js"></script>
+<script src="js/art/art07.js"></script>
+<script src="js/art/art08.js"></script>
+<script src="js/art/art09.js"></script>
+<script src="js/art/art10.js"></script>
+<script src="js/art/art11.js"></script>
+<script src="js/art/art12.js"></script>
+<script src="js/art/art13.js"></script>
+<script src="js/art/art14.js"></script>
+
+<!-- מוזיקה ואפקטים -->
+<script src="js/music/m_title.js"></script>
+<script src="js/music/m_hood.js"></script>
+<script src="js/music/m_forest.js"></script>
+<script src="js/music/m_grill.js"></script>
+<script src="js/music/m_river.js"></script>
+<script src="js/music/m_grandma.js"></script>
+<script src="js/music/m_danger.js"></script>
+<script src="js/music/m_end.js"></script>
+<script src="js/music/sfx.js"></script>
+
+<!-- סצנות -->
+<script src="js/scenes/scene01.js"></script>
+<script src="js/scenes/scene02.js"></script>
+<script src="js/scenes/scene03.js"></script>
+<script src="js/scenes/scene04.js"></script>
+<script src="js/scenes/scene05.js"></script>
+<script src="js/scenes/scene06.js"></script>
+<script src="js/scenes/scene07.js"></script>
+<script src="js/scenes/scene08.js"></script>
+<script src="js/scenes/scene09.js"></script>
+<script src="js/scenes/scene10.js"></script>
+<script src="js/scenes/scene11.js"></script>
+<script src="js/scenes/scene12.js"></script>
+<script src="js/scenes/scene13.js"></script>
+<script src="js/scenes/scene14.js"></script>
+
+<script src="js/boot.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>בדיקת מנוע — dev</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div id="game">
+  <div id="statusbar"><span id="st-name"></span><span id="st-score"></span></div>
+  <div id="screenwrap">
+    <canvas id="screen" width="320" height="200"></canvas>
+    <div id="msgbox" class="hidden">
+      <div id="msgname"></div>
+      <div id="msgtext"></div>
+      <div id="msghint">לחצו או ENTER להמשך</div>
+    </div>
+    <div id="deathbox" class="hidden">
+      <div id="deathtitle">נחה על משכבה בשלום</div>
+      <div id="deathtext"></div>
+      <div class="btns">
+        <button id="btn-restore">שחזור</button>
+        <button id="btn-restart">מההתחלה</button>
+      </div>
+    </div>
+    <div id="titlebox">
+      <h1 id="title-h1"></h1>
+      <h2 id="title-h2"></h2>
+      <button id="btn-start">התחלת ההרפתקה</button>
+      <button id="btn-load">טעינת משחק שמור</button>
+      <p class="cr">דף בדיקת מנוע</p>
+    </div>
+  </div>
+  <div id="invbar"><span id="inv-label">בתיק:</span><span id="inv-items"></span></div>
+  <div id="inputbar"><span id="prompt">&lt;</span><input id="cmd" autocomplete="off" placeholder="מה לעשות?"></div>
+</div>
+
+<script src="../js/engine/palette.js"></script>
+<script src="../js/engine/audio.js"></script>
+<script src="../js/engine/sprites.js"></script>
+<script src="../js/engine/parser.js"></script>
+<script src="../js/engine/core.js"></script>
+<script src="../js/engine/items.js"></script>
+<script>
+/* Minimal test content — simulates what the content agents will provide */
+RH.registerArt('art_title', function (ctx, P, t) {
+  P.bands(ctx, 0, 0, 320, 100, [0, 1, 1, 9]);
+  P.circle(ctx, 260, 40, 18, 18, 14);
+  P.rect(ctx, 0, 100, 320, 100, 2);
+  if (Math.floor(t * 2) % 2) P.px(ctx, 50, 20, 15);
+});
+RH.registerArt('art01', function (ctx, P, t) {
+  P.rect(ctx, 0, 0, 320, 118, 3);          // wall
+  P.rect(ctx, 0, 118, 320, 82, 6);         // floor
+  P.dither(ctx, 0, 110, 320, 8, 3, 6);
+  P.rect(ctx, 284, 86, 30, 78, 4);         // door
+  P.rect(ctx, 108, 118, 36, 6, 8);         // "tv"
+  P.rect(ctx, 150, 128, 80, 42, 1);        // "sofa"
+  P.circle(ctx, 244, 75, 16, 17, 13);      // "picture"
+});
+RH.registerMusic('m_hood', {
+  bpm: 120,
+  voices: [
+    { wave: 'square', vol: 0.1, notes: [['C4', 1], ['E4', 1], ['G4', 1], ['E4', 1]] },
+    { wave: 'triangle', vol: 0.15, notes: [['C2', 2], ['G2', 2]] },
+  ],
+});
+RH.registerScene({
+  id: 'scene01', name: 'חדר בדיקה', art: 'art01', music: 'm_hood', horizon: 118,
+  look: 'חדר בדיקות של המנוע. אם את רואה אותו — המנוע חי.',
+  enter(g) {
+    if (!g.flag('seen01')) { g.flag('seen01', 1); g.say('ברוכה הבאה לבדיקת המנוע.', 'שורה שנייה של פתיח.'); }
+  },
+  hotspots: [
+    { id: 'door', names: ['דלת'], rect: [284, 86, 30, 78],
+      look: 'דלת בדיקה. מאחוריה — עוד בדיקות.',
+      open(g) { g.say('הדלת נפתחת. וואו.'); g.addScore(10, 'p_test'); },
+    },
+    { id: 'sofa', names: ['ספה'], rect: [150, 128, 80, 42],
+      look: 'ספה וירטואלית.', take: 'היא גדולה ממך פי שלוש.',
+      use: { phone(g) { g.say('הנחת את הטלפון על הספה. מרגש.'); } },
+    },
+    { id: 'npc', names: ['בודק'], rect: [40, 92, 36, 78], sprite: 'generic', pos: [58, 170],
+      talk(g) { g.sayAs('הבודק', 'שלום! אני NPC.', 'יש לי שתי שורות.'); },
+      give: { basket(g) { g.say('הבודק קיבל את הסלסלה ושמח.'); g.takeItem('basket'); } },
+    },
+  ],
+  exits: { right: { to: 'scene01' } },
+});
+</script>
+<script src="../js/boot.js"></script>
+</body>
+</html>

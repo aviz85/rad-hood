@@ -1,0 +1,17 @@
+# OS / עורכים
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# OpenWolf — קבצי ריצה רגישים
+.wolf/hooks/
+.wolf/token-ledger.json
+.wolf/cron-state.json
+.wolf/designqc-captures/
+.wolf/suggestions.json
+
+# זמניים
+tmp-*
+*.log
+node_modules/

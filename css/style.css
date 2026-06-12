@@ -1,0 +1,129 @@
+/* מראה רטרו — Sierra 1989 */
+* { box-sizing: border-box; }
+body {
+  background: #0a0a12;
+  color: #ddd;
+  font-family: 'Courier New', Courier, monospace;
+  direction: rtl;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+#game { width: 960px; margin: 12px auto; }
+
+#statusbar {
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 12px;
+  font-size: 17px;
+  border: 2px solid #000;
+}
+
+#screenwrap { position: relative; width: 960px; height: 600px; background: #000; }
+canvas#screen {
+  width: 960px; height: 600px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  cursor: crosshair;
+}
+
+#msgbox {
+  position: absolute;
+  top: 56px; right: 110px; left: 110px;
+  background: #f4e8c8;
+  color: #1a1a1a;
+  border: 4px double #a00000;
+  box-shadow: 8px 8px 0 rgba(0,0,0,.55);
+  padding: 16px 20px 8px;
+  font-size: 20px;
+  line-height: 1.55;
+  text-align: right;
+  cursor: pointer;
+  white-space: pre-wrap;
+}
+#msgname { color: #a00000; font-weight: bold; margin-bottom: 4px; }
+#msghint { color: #8a7d5c; font-size: 12px; text-align: left; margin-top: 8px; }
+
+#deathbox {
+  position: absolute;
+  top: 130px; right: 160px; left: 160px;
+  background: #2b0000;
+  color: #ffd9d9;
+  border: 4px double #ff5555;
+  box-shadow: 8px 8px 0 rgba(0,0,0,.7);
+  padding: 22px 24px;
+  font-size: 20px;
+  line-height: 1.6;
+  text-align: center;
+  white-space: pre-wrap;
+}
+#deathtitle { color: #ff5555; font-size: 26px; font-weight: bold; margin-bottom: 12px; }
+#deathbox .btns { margin-top: 18px; display: flex; gap: 14px; justify-content: center; }
+
+#titlebox {
+  position: absolute; inset: 0;
+  background: rgba(2, 2, 24, .82);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+#titlebox h1 {
+  color: #ff5555;
+  font-size: 44px;
+  margin: 0;
+  text-shadow: 4px 4px 0 #550000, 8px 8px 0 rgba(0,0,0,.5);
+}
+#titlebox h2 { color: #ffff55; font-size: 19px; font-weight: normal; margin: 0 0 14px; }
+#titlebox .cr { color: #8888aa; font-size: 12px; margin-top: 26px; }
+
+button {
+  font-family: inherit;
+  font-size: 19px;
+  background: #1a1a3e;
+  color: #ffff55;
+  border: 3px solid #ffff55;
+  padding: 9px 30px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000;
+}
+button:hover { background: #ffff55; color: #1a1a3e; }
+button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+
+#invbar {
+  background: #16162a;
+  border: 2px solid #333;
+  border-top: none;
+  padding: 6px 12px;
+  min-height: 32px;
+  font-size: 16px;
+}
+#inv-label { color: #888; margin-left: 10px; }
+.inv-item { margin-left: 16px; color: #ffff55; cursor: pointer; }
+.inv-item:hover { color: #fff; text-decoration: underline; }
+
+#inputbar {
+  display: flex;
+  background: #000;
+  border: 2px solid #333;
+  border-top: 1px solid #222;
+  padding: 8px 10px;
+  align-items: center;
+}
+#prompt { color: #55ff55; margin-left: 8px; font-size: 19px; }
+#cmd {
+  flex: 1;
+  background: #000;
+  color: #55ff55;
+  border: none;
+  font: 19px 'Courier New', monospace;
+  direction: rtl;
+  outline: none;
+}
+#cmd::placeholder { color: #1e6e1e; }
+
+.hidden { display: none !important; }

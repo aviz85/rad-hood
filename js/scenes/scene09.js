@@ -46,7 +46,7 @@ RH.registerScene({
       look:
         'משהו מתכתי מנצנץ באור הלפיד, ליד הקיר. במערות, מה שמנצנץ זה או אוצר או בעיה. לפעמים שניהם.',
       take(g) {
-        g.takeItem('rusty_key');
+        g.give('rusty_key');
         g.addScore(10, 'p_key');
         g.playSfx('pickup');
         g.sayAs(
@@ -70,7 +70,7 @@ RH.registerScene({
           g.say('צנצנת אחת בסלסלה זה ראיה. שתיים זה כבר מלאי, ואת לא בעסקי הריבה. שתישאר.');
           return;
         }
-        g.takeItem('jam');
+        g.give('jam');
         g.addScore(10, 'p_jam');
         g.playSfx('pickup');
         g.say(

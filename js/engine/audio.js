@@ -21,6 +21,9 @@
         A.master = A.ctx.createGain();
         A.master.gain.value = 0.5;
         A.master.connect(A.ctx.destination);
+        A.musicGain = A.ctx.createGain();
+        A.musicGain.gain.value = 1;
+        A.musicGain.connect(A.master);
         const len = A.ctx.sampleRate;
         A.noiseBuf = A.ctx.createBuffer(1, len, A.ctx.sampleRate);
         const d = A.noiseBuf.getChannelData(0);
@@ -40,15 +43,33 @@
       A.cur = null;
     },
 
-    play(id) {
-      if (!id) { A.stop(); return; }
-      if (A.cur === id) return;
-      if (!A.ctx) { A.pending = id; return; }
+    _start(id) {
       A.stop();
       const def = A.music[id];
       if (!def || !def.voices) return;
       A.cur = id;
+      const t = A.ctx.currentTime;
+      A.musicGain.gain.cancelScheduledValues(t);
+      A.musicGain.gain.setValueAtTime(0.0001, t);
+      A.musicGain.gain.linearRampToValueAtTime(1, t + 0.45);
       A._loop(id, def);
+    },
+
+    play(id) {
+      if (!id) { A.stop(); return; }
+      if (A.cur === id) return;
+      if (!A.ctx) { A.pending = id; return; }
+      if (A.switchTO) { clearTimeout(A.switchTO); A.switchTO = null; }
+      if (A.cur) {
+        /* fade the current track out, then start the next one */
+        const t = A.ctx.currentTime;
+        A.musicGain.gain.cancelScheduledValues(t);
+        A.musicGain.gain.setValueAtTime(A.musicGain.gain.value, t);
+        A.musicGain.gain.linearRampToValueAtTime(0.0001, t + 0.3);
+        A.switchTO = setTimeout(() => { A.switchTO = null; A._start(id); }, 320);
+      } else {
+        A._start(id);
+      }
     },
 
     _loop(id, def) {
@@ -84,17 +105,17 @@
       g.gain.linearRampToValueAtTime(vol, at + 0.01);
       g.gain.setValueAtTime(vol, Math.max(at + 0.01, at + dur - 0.04));
       g.gain.linearRampToValueAtTime(0.0001, at + dur);
-      o.connect(g); g.connect(A.master);
+      o.connect(g); g.connect(A.musicGain);
       o.start(at); o.stop(at + dur + 0.02);
       A.nodes.push(o);
     },
 
-    _noise(at, dur, vol) {
+    _noise(at, dur, vol, out) {
       const s = A.ctx.createBufferSource(), g = A.ctx.createGain();
       s.buffer = A.noiseBuf;
       g.gain.setValueAtTime(vol, at);
       g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-      s.connect(g); g.connect(A.master);
+      s.connect(g); g.connect(out || A.musicGain);
       s.start(at); s.stop(at + dur + 0.02);
       A.nodes.push(s);
     },
@@ -114,7 +135,7 @@
     },
     burst(dur, vol) {
       if (!A.ctx) return;
-      A._noise(A.ctx.currentTime, dur, vol || 0.2);
+      A._noise(A.ctx.currentTime, dur, vol || 0.2, A.master);
     },
 
     playSfx(name) {

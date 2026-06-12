@@ -9,7 +9,7 @@ body {
   display: flex;
   justify-content: center;
 }
-#game { width: 960px; margin: 12px auto; }
+#game { width: min(960px, 100vw); margin: 12px auto; }
 
 #statusbar {
   background: #fff;
@@ -22,9 +22,10 @@ body {
   border: 2px solid #000;
 }
 
-#screenwrap { position: relative; width: 960px; height: 600px; background: #000; }
+#screenwrap { position: relative; width: 100%; aspect-ratio: 8 / 5; background: #000; }
 canvas#screen {
-  width: 960px; height: 600px;
+  width: 100%; height: 100%;
+  touch-action: manipulation;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   display: block;
@@ -33,7 +34,7 @@ canvas#screen {
 
 #msgbox {
   position: absolute;
-  top: 56px; right: 110px; left: 110px;
+  top: 9%; right: 11%; left: 11%;
   background: #f4e8c8;
   color: #1a1a1a;
   border: 4px double #a00000;
@@ -50,7 +51,7 @@ canvas#screen {
 
 #deathbox {
   position: absolute;
-  top: 130px; right: 160px; left: 160px;
+  top: 21%; right: 16%; left: 16%;
   background: #2b0000;
   color: #ffd9d9;
   border: 4px double #ff5555;
@@ -140,3 +141,21 @@ button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
 }
 
 .hidden { display: none !important; }
+
+/* Mobile — scale typography and chrome down */
+@media (max-width: 700px) {
+  body { margin: 0; }
+  #game { margin: 0 auto; }
+  #statusbar { font-size: 13px; padding: 2px 8px; }
+  #msgbox { font-size: 15px; padding: 10px 12px 6px; border-width: 3px; }
+  #deathbox { font-size: 15px; padding: 14px 14px; }
+  #deathtitle { font-size: 19px; }
+  #titlebox h1 { font-size: 26px; }
+  #titlebox h2 { font-size: 14px; }
+  #titlebox .cr { font-size: 10px; padding: 0 12px; }
+  button { font-size: 16px; padding: 8px 22px; }
+  #invbar { font-size: 13px; }
+  #inputbar { padding: 6px 8px; }
+  #cmd, #prompt { font-size: 16px; }
+  #hoverlabel { display: none !important; }
+}

@@ -115,7 +115,29 @@ button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
   padding: 8px 10px;
   align-items: center;
 }
-#prompt { color: #55ff55; margin-left: 8px; font-size: 19px; }
+#prompt { color: #55ff55; margin-left: 8px; font-size: 19px; direction: ltr; unicode-bidi: isolate; }
+
+#suggest {
+  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #000;
+  border: 2px solid #333;
+  border-bottom: none;
+  padding: 6px 10px;
+}
+.sug-chip {
+  color: #ffff55;
+  border: 1px solid #3a3a16;
+  background: #161608;
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-size: 15px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.sug-chip:hover { color: #fff; border-color: #ffff55; }
 #cmd {
   flex: 1;
   background: #000;

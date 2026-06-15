@@ -1,4 +1,138 @@
 {
   "version": 1,
-  "bugs": []
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-06-15T08:01:07.737Z",
+      "error_message": "Wrong operator: && should be >=",
+      "file": "js/engine/core.js",
+      "root_cause": "Used \"&&\" instead of \">=\"",
+      "fix": "Changed operator && → >=",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15T08:01:07.737Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-06-15T08:01:22.702Z",
+      "error_message": "Wrong condition in logic",
+      "file": "js/engine/core.js",
+      "root_cause": "Condition was: if (verb === 'look')",
+      "fix": "Changed to: if (noun && (verb === 'look' || NEED_NEAR.includes(ver)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15T08:01:22.702Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-06-15T08:02:08.051Z",
+      "error_message": "Incorrect value in code",
+      "file": "index.html",
+      "root_cause": "Had \"inputbar\"",
+      "fix": "Changed to \"suggest\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15T08:02:08.051Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-06-15T08:02:23.097Z",
+      "error_message": "Missing guard clause",
+      "file": "js/engine/core.js",
+      "root_cause": "No early return/throw for edge case: e.key === 'Enter'",
+      "fix": "Added guard clause: if (e.key === 'Enter')",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15T08:02:23.097Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-06-15T08:02:41.515Z",
+      "error_message": "CSS fix: color, font-size",
+      "file": "css/style.css",
+      "root_cause": "color: #55ff55 → #ffff55; font-size: 19px → 15px",
+      "fix": "Changed color: #55ff55 → #ffff55; font-size: 19px → 15px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15T08:02:41.515Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-06-15T08:07:12.804Z",
+      "error_message": "Wrong condition in logic",
+      "file": "js/engine/parser.js",
+      "root_cause": "Condition was: if (d === 1)",
+      "fix": "Changed to: if (d === 1 && Math.max(n.length, x.length)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15T08:07:12.804Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-06-15",
+      "error_message": "Hebrew commands phrased as infinitives (\"לדבר עם הפנסיונר\", \"לקחת עיתון\") or with a small verb typo (\"דברר\") fell through to a random snark instead of acting.",
+      "file": "js/engine/parser.js",
+      "root_cause": "parse() matched the first token only against an exact verb-synonym list; it never stripped the infinitive ל- prefix and had no fuzzy fallback, so any unlisted conjugation/typo produced verb=null.",
+      "fix": "Added verbOf(): exact -> strip leading prefix letter (infinitive ל / stray ו) -> Levenshtein distance<=1 fallback. Also added suggestVerb() for a 'did you mean' hint and general Hebrew prefix-form + fuzzy noun matching (scoreName/matchScore).",
+      "tags": [
+        "hebrew",
+        "parser",
+        "infinitive",
+        "fuzzy",
+        "input"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-06-15",
+      "error_message": "E2E regression: 'אכול ריבה' stopped triggering the jam death; scene12.onCommand intercepted it with the knitting line.",
+      "file": "js/engine/parser.js",
+      "root_cause": "New fuzzy matchNoun let 'ריבה' match 'סריגה' at edit-distance 2 (4-letter word). scene12.onCommand uses RHParser.matchNoun for scenery (['סריגה','מסרגות','סוודר']), so it falsely claimed the command before the jam hotspot/item could.",
+      "fix": "Restricted fuzzy in scoreName: distance-2 only when min word length >=6; distance-1 only when max length >=4. matchNoun stays a thin wrapper, so scene onCommand handlers no longer get false positives. Verified via test/e2e.mjs (32/32).",
+      "tags": [
+        "regression",
+        "fuzzy",
+        "parser",
+        "matchNoun",
+        "onCommand",
+        "e2e"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-15"
+    }
+  ]
 }

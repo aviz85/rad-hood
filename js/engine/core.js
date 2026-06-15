@@ -137,6 +137,7 @@
     try { RHAudio.play(def.music); } catch (e) {}
     localStorage.setItem('rh_auto', snapshot());
     if (def.enter) { try { def.enter(RH); } catch (e) { console.error(e); } }
+    if (RH.renderSuggest) RH.renderSuggest();
   };
 
   /* ===== rendering ===== */
@@ -254,7 +255,21 @@
     else if (typeof handler === 'string') RH.say(handler);
     else snark();
   }
-  function snark() { RH.say(RH.snarks[Math.floor(Math.random() * RH.snarks.length)]); }
+  function pickSnark() { return RH.snarks[Math.floor(Math.random() * RH.snarks.length)]; }
+  function snark() { RH.say(pickSnark()); }
+
+  /* names of everything the player can actually interact with right now —
+     used as a gentle hint whenever the parser can't place a command */
+  function visibleTargets() {
+    const out = [];
+    activeHotspots().forEach(h => { if (h.names && h.names[0]) out.push(h.names[0]); });
+    RH.inv.forEach(id => { const d = RH.items[id]; if (d && d.name) out.push(d.name); });
+    return out;
+  }
+  function targetsLine() {
+    const ts = activeHotspots().map(h => h.names && h.names[0]).filter(Boolean);
+    return ts.length ? ('אפשר כאן: ' + ts.join(', ') + '.') : '';
+  }
 
   function walkPointFor(h) {
     const sc = RH.scene;
@@ -281,16 +296,27 @@
     runHandler(handler, h, itemId);
   }
 
+  /* pick the BEST-matching hotspot (not just the first), so prefixes and small
+     typos resolve to the right object instead of an accidental partial hit */
   function findHotspot(noun) {
     if (!noun) return null;
-    return activeHotspots().find(h => RHParser.matchNoun(noun, [h.id].concat(h.names || [])));
+    let best = null, bs = 0;
+    activeHotspots().forEach(h => {
+      const s = RHParser.matchScore(noun, h.names || []);
+      if (s > bs) { bs = s; best = h; }
+    });
+    return bs >= 62 ? best : null;
   }
   function findInvItem(noun) {
     if (!noun) return null;
-    return RH.inv.find(id => {
+    let best = null, bs = 0;
+    RH.inv.forEach(id => {
       const d = RH.items[id];
-      return d && RHParser.matchNoun(noun, [id, d.name].concat(d.names || []));
+      if (!d) return;
+      const s = RHParser.matchScore(noun, [d.name].concat(d.names || []));
+      if (s > bs) { bs = s; best = id; }
     });
+    return bs >= 62 ? best : null;
   }
 
   /* ===== command dispatch ===== */
@@ -301,7 +327,14 @@
     if (sc.onCommand) {
       try { if (sc.onCommand(RH, verb || '', noun || '', target || '') === true) return; } catch (e) { console.error(e); }
     }
-    if (!verb) { snark(); return; }
+    if (!verb) {
+      const first = (RHParser.normalize(text).split(' ')[0]) || '';
+      const sug = RHParser.suggestVerb(first);
+      const t = targetsLine();
+      if (sug) RH.say('לא הבנתי את הפעולה. אולי "' + sug.word + '"?', t || []);
+      else RH.say(pickSnark(), t || []);
+      return;
+    }
 
     if (verb === 'inv') {
       if (!RH.inv.length) RH.say('התיק ריק. עצוב.');
@@ -369,7 +402,11 @@
       runHandler(handler, null, it);
       return;
     }
-    if (verb === 'look') { RH.say('את לא מוצאת "' + noun + '" פה.'); return; }
+    if (noun && (verb === 'look' || NEED_NEAR.includes(verb))) {
+      const t = targetsLine();
+      RH.say(verb === 'look' ? ('את לא מוצאת "' + noun + '" פה.') : (DEFAULTS[verb] || pickSnark()), t || []);
+      return;
+    }
     if (DEFAULTS[verb]) { RH.say(DEFAULTS[verb]); return; }
     snark();
   }
@@ -407,8 +444,61 @@
       const v = cmd.value.trim();
       cmd.value = '';
       if (v && !dead) dispatch(v);
+      renderSuggest();
     }
   });
+
+  /* ===== input assist: tappable suggestion chips (verbs, then visible targets) =====
+     Keeps play text-based, but unsticks phrasing — especially on mobile. */
+  const suggestBox = el('suggest');
+  const SUGGEST_VERBS = ['look', 'take', 'talk', 'use', 'give', 'open', 'read', 'eat', 'knock', 'photo', 'push', 'inv', 'help'];
+  function setCmd(v) { cmd.value = v; renderSuggest(); focusCmd(); }
+  function renderSuggest() {
+    if (!suggestBox) return;
+    suggestBox.innerHTML = '';
+    if (dead || msgOpen || !RH.scene) { suggestBox.style.display = 'none'; return; }
+    const raw = cmd.value;
+    const tokens = RHParser.normalize(raw).split(' ').filter(Boolean);
+    const endsSpace = /\s$/.test(raw) || raw === '';
+    const verb = tokens.length ? RHParser.verbOf(tokens[0]) : null;
+    let chips = [];
+
+    if (!verb && tokens.length <= 1 && !/\s$/.test(raw)) {
+      const part = tokens[0] || '';
+      SUGGEST_VERBS.forEach(v => {
+        const w = RHParser.VERB_LABEL[v];
+        const nw = RHParser.normalize(w.split(' ')[0]);
+        if (!part || nw.startsWith(part) || nw.includes(part) || RHParser.lev(part, nw) <= 1)
+          chips.push({ label: w, fill: w + ' ' });
+      });
+    } else {
+      const last = endsSpace ? '' : (raw.split(/\s+/).pop() || '');
+      const lastN = RHParser.normalize(last);
+      const head = endsSpace ? raw.replace(/\s+$/, '') : raw.slice(0, raw.length - last.length).replace(/\s+$/, '');
+      const seen = new Set();
+      visibleTargets().forEach(name => {
+        const nn = RHParser.normalize(name);
+        if (seen.has(name)) return;
+        if (!lastN || nn.startsWith(lastN) || nn.includes(lastN) || RHParser.lev(lastN, nn) <= 2) {
+          seen.add(name);
+          chips.push({ label: name, fill: (head ? head + ' ' : '') + name + ' ' });
+        }
+      });
+    }
+    chips = chips.slice(0, 6);
+    if (!chips.length) { suggestBox.style.display = 'none'; return; }
+    suggestBox.style.display = 'flex';
+    chips.forEach(c => {
+      const b = document.createElement('span');
+      b.className = 'sug-chip';
+      b.textContent = c.label;
+      b.addEventListener('click', () => setCmd(c.fill));
+      suggestBox.appendChild(b);
+    });
+  }
+  RH.renderSuggest = renderSuggest;
+  cmd.addEventListener('input', renderSuggest);
+  cmd.addEventListener('focus', renderSuggest);
   window.addEventListener('keydown', e => {
     /* skip if the cmd input handler already consumed this Enter (avoids double-advance) */
     if (e.key === 'Enter' && msgOpen && !e.defaultPrevented) { advance(); e.preventDefault(); return; }

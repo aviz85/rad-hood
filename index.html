@@ -8,9 +8,10 @@
 </head>
 <body>
 <div id="game">
-  <div id="statusbar"><span id="st-name"></span><span id="st-score"></span></div>
+  <div id="statusbar"><span id="st-name"></span><span id="hud-controls" class="hidden"><button id="btn-save" class="hud-btn" title="שמירת המשחק (Ctrl+S)">שמירה</button><button id="btn-load-hud" class="hud-btn" title="טעינת המשחק השמור">טעינה</button></span><span id="st-score"></span></div>
   <div id="screenwrap">
     <canvas id="screen" width="320" height="200"></canvas>
+    <div id="toast"></div>
     <div id="msgbox" class="hidden">
       <div id="msgname"></div>
       <div id="msgtext"></div>

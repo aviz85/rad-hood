@@ -17,6 +17,7 @@
     started = true;
     clearInterval(titleTimer);
     tb.classList.add('hidden');
+    el('hud-controls').classList.remove('hidden');
     RHAudio.ensure();
     if (load && RH.loadGame()) { RH.focusCmd(); return; }
     RH.newGame();

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-15T08:07:12.792Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-15T16:32:40.694Z
 > Files: 69 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -9,7 +9,7 @@
 - `BUILD-REPORT.md` — BUILD REPORT — Red Riding Hood and the Vegetarian Wolf (~2013 tok)
 - `CLAUDE.md` — OpenWolf (~57 tok)
 - `GAME-SPEC.md` — GAME-SPEC — Red Riding Hood and the Vegetarian Wolf (~5502 tok)
-- `index.html` — כיפה אדומה והזאב הצמחוני — קווסט (~997 tok)
+- `index.html` — כיפה אדומה והזאב הצמחוני — קווסט (~1060 tok)
 
 ## .claude/
 
@@ -21,7 +21,7 @@
 
 ## css/
 
-- `style.css` — Styles: 27 rules (~1312 tok)
+- `style.css` — Styles: 33 rules (~1575 tok)
 
 ## design/
 
@@ -36,7 +36,7 @@
 
 ## js/
 
-- `boot.js` — el: start (~315 tok)
+- `boot.js` — el: start (~330 tok)
 
 ## js/art/
 
@@ -63,7 +63,7 @@
 ## js/engine/
 
 - `audio.js` — Declares freq (~1654 tok)
-- `core.js` — W: el, nextMsg, advance + 13 more (~6179 tok)
+- `core.js` — W: el, nextMsg, advance + 12 more (~6454 tok)
 - `items.js` — Declares I (~817 tok)
 - `palette.js` — EGA: col (~631 tok)
 - `parser.js` — VERBS: normalize, prefixForms, lev + 8 more (~2047 tok)

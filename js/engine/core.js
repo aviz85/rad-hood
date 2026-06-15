@@ -80,6 +80,7 @@
     RHAudio.stop();
     dead = true;
     msgQ = []; msgOpen = false; el('msgbox').classList.add('hidden');
+    el('hud-controls').classList.add('hidden');
     el('deathtext').textContent = text + '\n\nסיירה הייתה גאה בך.';
     el('btn-restore').style.display = localStorage.getItem('rh_auto') ? '' : 'none';
     el('deathbox').classList.remove('hidden');
@@ -112,6 +113,17 @@
   }
   RH.saveGame = () => { localStorage.setItem('rh_save', snapshot()); };
   RH.loadGame = () => loadSlot('rh_save');
+
+  /* brief HUD confirmation — does not touch the narration queue */
+  let toastTimer = null;
+  RH.toast = (msg) => {
+    const t = el('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+  };
   RH.newGame = () => {
     RH.state = {}; RH.inv = ['phone']; RH.score = 0; RH.scored = {};
     refreshInv();
@@ -556,10 +568,27 @@
 
   el('btn-restore').addEventListener('click', () => {
     el('deathbox').classList.add('hidden');
+    el('hud-controls').classList.remove('hidden');
     dead = false;
     loadSlot('rh_auto');
   });
   el('btn-restart').addEventListener('click', () => location.reload());
+
+  /* ===== HUD save/load buttons + Ctrl/Cmd+S ===== */
+  el('btn-save').addEventListener('click', () => {
+    RH.saveGame();
+    RH.toast('המשחק נשמר 💾');
+    focusCmd();
+  });
+  el('btn-load-hud').addEventListener('click', () => {
+    RH.toast(RH.loadGame() ? 'המשחק נטען' : 'אין משחק שמור');
+    focusCmd();
+  });
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+      if (RH.scene && !dead) { e.preventDefault(); RH.saveGame(); RH.toast('המשחק נשמר 💾'); }
+    }
+  });
 
   /* ===== main loop ===== */
   function frame(t) {

@@ -16,11 +16,44 @@ body {
   color: #000;
   font-weight: bold;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   padding: 3px 12px;
   font-size: 17px;
   border: 2px solid #000;
 }
+
+#hud-controls { display: flex; align-items: center; gap: 8px; }
+.hud-btn {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 2px 14px;
+  background: #1a1a3e;
+  color: #ffff55;
+  border: 2px solid #1a1a3e;
+  box-shadow: 2px 2px 0 #888;
+  cursor: pointer;
+}
+.hud-btn:hover { background: #ffff55; color: #1a1a3e; }
+.hud-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 #888; }
+
+#toast {
+  position: absolute;
+  bottom: 8%; left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a3e;
+  color: #ffff55;
+  border: 2px solid #ffff55;
+  padding: 8px 22px;
+  font-size: 16px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.6);
+  z-index: 6;
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; }
 
 #screenwrap { position: relative; width: 100%; aspect-ratio: 8 / 5; background: #000; }
 canvas#screen {
@@ -169,6 +202,9 @@ button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
   body { margin: 0; }
   #game { margin: 0 auto; }
   #statusbar { font-size: 13px; padding: 2px 8px; }
+  .hud-btn { font-size: 11px; padding: 2px 9px; }
+  #hud-controls { gap: 5px; }
+  #toast { font-size: 13px; padding: 6px 16px; }
   #msgbox { font-size: 15px; padding: 10px 12px 6px; border-width: 3px; }
   #deathbox { font-size: 15px; padding: 14px 14px; }
   #deathtitle { font-size: 19px; }

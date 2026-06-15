@@ -46,3 +46,4 @@
 | -- | core.js: best-score findHotspot/findInvItem, "did you mean" + "אפשר כאן:" target hints, #suggest autocomplete chip bar | js/engine/core.js | tappable suggestions, unstuck on phrasing | ~3k |
 | -- | Fixed regression: fuzzy d2 matched ריבה↔סריגה → scene12 false intercept; gated d2 to len>=6 | js/engine/parser.js | e2e 32/32, 270/270 | ~2k |
 | -- | RTL prompt arrow < → > (LTR-isolated), CSS for #suggest chips | index.html, css/style.css | verified in browser | ~1k |
+| 11:12 | Session end: 10 writes across 4 files (parser.js, core.js, index.html, style.css) | 10 reads | ~23382 tok |
